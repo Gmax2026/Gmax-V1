@@ -1,0 +1,315 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🤖 G MAX V1 — SIGNAL BOT
+  Official Setup & User Manual
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Engineered by Paqu
+  Server Hosted by Paqu
+  Strategy by Paqu
+  2 Years Backtested by Paqu
+
+  Signal Channel : @GMAXV1 (Telegram)
+  Exchanges      : Binance | Bitget | Bybit | KuCoin | OKX
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  NO FILES NEEDED — ONE COMMAND INSTALLS EVERYTHING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  You do NOT need to download or copy any files yourself.
+  One command installs Termux/terminal tools, downloads the bot,
+  and sets up start/stop commands — all in one go.
+
+  Pick your device below and run the one line shown.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  BEFORE YOU START — API KEY SAFETY ⚠️
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ ONLY enable "Futures Trading" permission on your API key
+  ✅ NEVER enable "Withdrawals" permission — not needed
+  ✅ Set your IP address as a restriction on the API key
+  ✅ Your keys are stored ONLY on your own device
+  ✅ Paqu has zero access to your API keys or your funds
+
+  HOW TO CREATE SAFE API KEYS:
+  • Binance : Account → API Management → Restrict to IP → Futures only
+  • Bybit   : Account → API → enable "Contract Trading" only
+  • Bitget  : API Management → Futures permission only
+  • KuCoin  : API Management → Futures trading permission
+  • OKX     : API → enable "Trade" → restrict IP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TELEGRAM BOT SETUP (required before starting)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Step 1 — Create your Telegram bot:
+    1. Open Telegram, search: @BotFather
+    2. Send: /newbot
+    3. Give it a name (e.g. "My GMax Bot")
+    4. Give it a username (e.g. "MyGMaxV1_bot")
+    5. BotFather will send you a TOKEN — save it
+
+  Step 2 — Get your Admin User ID:
+    1. Open Telegram, search: @userinfobot
+    2. Send it any message
+    3. It replies with your numeric User ID (e.g. 6783713687)
+    4. Save this number
+
+  Step 3 — Add your bot to the signal channel:
+    1. Contact Paqu with your bot's @username
+    2. Paqu will add your bot to the @GMAXV1 signal channel
+    3. Once added, your bot will receive all signals instantly
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART A — MOBILE SETUP (Android + Termux)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  REQUIREMENTS:
+  • Android phone (any version)
+  • Termux app — install from F-Droid (NOT Play Store)
+    Link: https://f-droid.org/packages/com.termux/
+    ⚠️ The Play Store version is outdated and will not work
+    correctly. Use F-Droid only.
+
+  STEP 1 — Install Termux from F-Droid, then open it.
+
+  STEP 2 — Run this ONE command (copy and paste it exactly):
+
+      curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_mobile.sh | bash
+
+    This single command:
+      • Installs tmux, Python, and required packages
+      • Downloads G MAX V1 automatically
+      • Sets up startg / stopg / viewg / gstatus / updateg
+    Wait 2-3 minutes. You will see: ✅ Mobile Setup Complete!
+
+    A permission popup will appear during setup asking for
+    storage access — tap Allow.
+
+  STEP 3 — Start the bot
+    Type:
+      startg
+
+    You will see the dashboard URL like:
+      📊 Dashboard: http://192.168.x.x:5000
+
+  STEP 4 — Open the dashboard
+    Open your phone's browser and go to:
+      http://localhost:5000
+      OR the IP shown in Termux
+
+  STEP 5 — Enter your API keys on the Setup page
+    • At least one exchange API key + secret
+    • Your Telegram bot token
+    • Your Telegram User ID
+    Click "Save & Start Bot"
+
+  STEP 6 — Done!
+    The bot is now live. Send /menu to your Telegram bot
+    to see status, positions, and last signal.
+
+  ─── TERMUX COMMANDS (work from anywhere) ──────────────────
+
+    startg      Start the bot (also works: Startg)
+    stopg       Stop the bot  (also works: Stopg)
+    viewg       See live bot logs (Ctrl+B then D to detach)
+    gstatus     Check if bot is running
+    updateg     Download the latest version of the bot
+
+  ─── KEEPING BOT ALIVE ─────────────────────────────────────
+
+    • Enable "Acquire Wakelock" in Termux notification bar
+    • Disable battery optimization for Termux in Android settings
+    • If Termux closes, just reopen and type: startg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART B — PC / VPS SETUP (Linux / Mac / Windows WSL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  REQUIREMENTS:
+  • Python 3.8 or higher (https://www.python.org/downloads/)
+  • A terminal:
+      Linux/Mac : the built-in Terminal app
+      Windows   : install WSL2 first (Windows Terminal + Ubuntu),
+                  then use the Ubuntu terminal — this bot does
+                  not run in plain Windows CMD/PowerShell
+  • tmux and curl (installed automatically by the setup command)
+
+  STEP 1 — Open your terminal (Terminal / Ubuntu WSL)
+
+  STEP 2 — Run this ONE command (copy and paste it exactly):
+
+      curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_pc.sh | bash
+
+    This single command:
+      • Installs tmux and required Python packages
+      • Downloads G MAX V1 automatically to ~/GMaxSignalBot
+      • Sets up startg / stopg / viewg / gstatus / updateg
+        as commands you can run from anywhere
+    Wait 1-2 minutes. You will see: ✅ PC Setup Complete!
+
+    ⚠️ If startg says "command not found" right after install,
+    close your terminal and open a new one, then try again —
+    this only happens the very first time.
+
+  STEP 3 — Start the bot
+      startg
+
+    You will see:
+      📊 Dashboard: http://YOUR_IP:5000
+
+  STEP 4 — Open the dashboard in your browser
+      http://localhost:5000
+
+  STEP 5 — Enter your API keys on the Setup page
+    Fill in your exchange keys and Telegram credentials.
+    Click "Save & Start Bot"
+
+  STEP 6 — Done!
+
+  ─── PC COMMANDS (work from anywhere) ──────────────────────
+
+    startg       Start the bot
+    stopg        Stop the bot
+    viewg        Live logs (Ctrl+B then D to exit)
+    gstatus      Check running status
+    updateg      Download the latest version of the bot
+
+  ─── VPS TIP ───────────────────────────────────────────────
+    On a VPS, the bot runs 24/7 automatically.
+    To access dashboard remotely:
+      http://YOUR_VPS_IP:5000
+    Make sure port 5000 is open in your VPS firewall.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  UPDATING TO A NEW VERSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  When Paqu releases an update, you do NOT need to reinstall.
+  Just run:
+
+      updateg
+
+  This downloads the latest bot file and restarts it automatically
+  if it was running. Your saved API keys and settings are kept.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HOW THE BOT WORKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Your Telegram bot is added to the @GMAXV1 signal channel
+  2. When Paqu posts a Long or Short signal, your bot sees it instantly
+  3. The bot parses: coin, direction, entry, TP, Stop Loss
+  4. It opens a MARKET order on all your enabled exchanges —
+     but ONLY once Paqu has approved your bot token (see below)
+  5. TP and Stop Loss orders are placed automatically
+  6. If a coin already has an open position on an exchange,
+     that exchange is skipped for that coin (golden rule) —
+     the bot will not stack a second position on the same coin
+  7. If a coin is not listed on your exchange, you get a warning
+
+  ─── APPROVAL / "AWAITING APPROVAL" ────────────────────────
+
+  After you finish setup, your dashboard will show:
+    ⏳ Awaiting Approval — Bot is running and receiving signals.
+    Trades will open once Paqu Trading approves your bot token.
+
+  This is normal for a new bot. Contact Paqu with your bot
+  token to get approved — usually within a few minutes. The
+  bot will NOT open any real trades until approval goes through,
+  even though it's already listening for signals in the background.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DASHBOARD SECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Top Bar    : Exchange status, signal count, latest signal
+  Contact Us : Reach Paqu's support directly (Telegram/WhatsApp/etc)
+  Stats      : Today PnL, Total PnL, Win Rate, Profit Factor
+  Positions  : All currently open trades (clickable coins)
+  Top Coins  : Best performing coins by win rate
+  Recent Trades : Last 20 closed trades, "View All" button
+  Data Center: Equity curve, drawdown, daily P&L, top coins
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SETTINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Theme         : 10 themes including Lucario, Charizard, Classic
+  Exchanges     : ON/OFF toggle per exchange + update API keys
+  Telegram      : Update bot token or admin ID
+  Margin Mode   : Fixed $ amount OR % of your balance
+  Margin Type   : Cross (shared margin) or Isolated (per position)
+  Leverage      : 🔒 Locked — optimised by developer
+  Coin Cooldown : 🔒 Locked — optimised by developer
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TELEGRAM BOT COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  /menu          Main menu with buttons
+  /status        Bot status, PnL, win rate
+  /positions     All open positions
+  /history       Last 8 closed trades
+  /signal        Latest signal and results
+  /ip            Get dashboard IP address
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  NEED HELP? CONTACT US
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Tap "Contact Us" on your dashboard for the fastest way to
+  reach Paqu's support team — the list of contact options
+  there is always kept up to date.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  One-line install command fails / "curl: command not found"?
+    → Termux: run "pkg install curl -y" first, then try again
+    → PC/VPS: install curl via your package manager, then retry
+
+  Bot not starting?
+    → Run: updateg   (re-downloads the bot file cleanly)
+    → Check for errors with: viewg
+
+  "startg: command not found" right after install?
+    → Close and reopen your terminal/Termux once, then try again
+    → This only happens the very first time after install
+
+  Dashboard not opening?
+    → Make sure bot is running: gstatus
+    → Try: http://localhost:5000
+    → On VPS: make sure port 5000 is open in the firewall
+
+  Stuck on "Awaiting Approval" for more than a few minutes?
+    → Contact Paqu via the Contact Us page with your bot token
+    → Approval is manual on Paqu's side, not automatic
+
+  Not receiving signals?
+    → Make sure your bot is added to @GMAXV1 channel (contact Paqu)
+    → Check Telegram token is correct in Settings
+    → Check viewg for error messages
+
+  Exchange error on signal?
+    → Check your API key has Futures trading permission
+    → Verify key is not expired or IP-restricted incorrectly
+    → Check Settings → exchange ON/OFF is set correctly
+
+  Coin not found warning?
+    → That coin is not listed on your exchange's Futures market
+    → The bot skips that exchange and continues with others
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CREDITS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Engineered by Paqu
+  Server Hosted by Paqu
+  Strategy by Paqu
+  2 Years Backtested by Paqu
+
+  Signal Channel: https://t.me/GMAXV1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
