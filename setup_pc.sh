@@ -2,11 +2,11 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  G MAX V1 Signal Bot — PC/VPS Setup (Linux/Mac)
 #  One-line install:
-#  curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_pc.sh | bash
+#  curl -fsSL https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_pc.sh | bash
 #  Engineered by Paqu
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-REPO_RAW="https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main"
+REPO_RAW="https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main"
 BOT_DIR="$HOME/GMaxSignalBot"
 BOT_FILE="GMaxSignalBot.py"
 BOT_PATH="$BOT_DIR/$BOT_FILE"

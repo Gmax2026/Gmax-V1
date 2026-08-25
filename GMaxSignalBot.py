@@ -20,7 +20,7 @@ from pathlib import Path
 from collections import defaultdict
 from flask import Flask, render_template_string, request, redirect, jsonify
 
-BOT_VERSION  = "2026.08.25.1"   # bumped by Paqu on each release pushed to gmax-bot repo
+BOT_VERSION  = "2026.08.25.1"   # bumped by Paqu on each release pushed to Gmax-V1 repo
 BOT_DIR      = Path(__file__).parent
 CONFIG_PATH  = BOT_DIR / "config.json"
 HISTORY_PATH = BOT_DIR / "trade_history.json"
@@ -196,11 +196,11 @@ def _update_command():
     try:
         if platform.system() == 'Linux' and 'ANDROID_ROOT' in _os.environ:
             return ('pkg install curl -y && curl -fsSL '
-                    'https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_mobile.sh | bash')
+                    'https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_mobile.sh | bash')
     except Exception:
         pass
     return ('curl -fsSL '
-            'https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_pc.sh | bash')
+            'https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_pc.sh | bash')
 
 _license_cache = {'valid': False, 'checked_at': 0, 'expiry': ''}
 _contact_cache = {'contacts': [], 'checked_at': 0}

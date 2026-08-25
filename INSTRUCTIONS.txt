@@ -75,7 +75,7 @@
 
   STEP 2 — Run this ONE command (copy and paste it exactly):
 
-      curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_mobile.sh | bash
+      curl -fsSL https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_mobile.sh | bash
 
     This single command:
       • Installs tmux, Python, and required packages
@@ -139,7 +139,7 @@
 
   STEP 2 — Run this ONE command (copy and paste it exactly):
 
-      curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_pc.sh | bash
+      curl -fsSL https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_pc.sh | bash
 
     This single command:
       • Installs tmux and required Python packages

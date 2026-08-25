@@ -2,11 +2,11 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  G MAX V1 Signal Bot — Mobile Setup (Termux)
 #  One-line install (paste this exact line into Termux):
-#  pkg install curl -y && curl -fsSL https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main/setup_mobile.sh | bash
+#  pkg install curl -y && curl -fsSL https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main/setup_mobile.sh | bash
 #  Engineered by Paqu
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-REPO_RAW="https://raw.githubusercontent.com/Adilfffffff/gmax-bot/main"
+REPO_RAW="https://raw.githubusercontent.com/Gmax2026/Gmax-V1/main"
 BOT_DIR="$HOME/storage/shared/GMAX-Signal"
 BOT_FILE="GMaxSignalBot.py"
 BOT_PATH="$BOT_DIR/$BOT_FILE"
