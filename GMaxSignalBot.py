@@ -20,10 +20,11 @@ from pathlib import Path
 from collections import defaultdict
 from flask import Flask, render_template_string, request, redirect, jsonify
 
-BOT_VERSION  = "2026.08.25.1"   # bumped by Paqu on each release pushed to Gmax-V1 repo
+BOT_VERSION  = "2026.08.25.2"   # bumped by Paqu on each release pushed to Gmax-V1 repo
 BOT_DIR      = Path(__file__).parent
 CONFIG_PATH  = BOT_DIR / "config.json"
 HISTORY_PATH = BOT_DIR / "trade_history.json"
+POSITIONS_PATH = BOT_DIR / "open_positions.json"
 
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s | %(message)s', datefmt='%I:%M %p')
@@ -1130,6 +1131,65 @@ def is_coin_locked(ex, symbol):
     key = f"{ex}:{symbol}"
     return key in state['open_positions']
 
+def load_open_positions():
+    """Restores the open-position lock table from disk on startup, so a
+    restart (crash, phone reboot, update) never forgets a real open
+    position and lets a duplicate signal stack on top of it. This file
+    is the primary safety net; _reconcile_open_positions() below is a
+    second, independent check against the exchange itself."""
+    if POSITIONS_PATH.exists():
+        try:
+            with open(POSITIONS_PATH) as f:
+                d = json.load(f)
+                state['open_positions'] = d.get('open_positions', {})
+                log.info(f"Restored {len(state['open_positions'])} open position lock(s) from disk")
+        except Exception as e:
+            log.info(f"open_positions load failed: {e}")
+
+def save_open_positions():
+    try:
+        with open(POSITIONS_PATH, 'w') as f:
+            json.dump({'open_positions': state['open_positions']}, f)
+    except Exception as e:
+        log.info(f"open_positions save failed: {e}")
+
+def _reconcile_open_positions():
+    """Runs once at startup, after load_open_positions(). Checks every
+    locked coin against the real exchange balance: if the exchange says
+    the position is actually flat (closed while the bot was offline —
+    TP/SL hit, manual close, liquidation), the lock is released so a
+    real new signal isn't blocked forever on a position that no longer
+    exists. If the exchange confirms the position is still open, or the
+    check fails/can't be verified, the lock is kept — erring toward
+    "still locked" is always the safer default here."""
+    if not state['open_positions']:
+        return
+    log.info(f"Reconciling {len(state['open_positions'])} restored lock(s) against exchange...")
+    for key in list(state['open_positions'].keys()):
+        try:
+            ex, symbol = key.split(':', 1)
+            k, sec, pp = _get_creds(ex)
+            if not k:
+                continue  # no creds for this exchange anymore — leave locked, safest default
+            sz, ok = _ex_pos_size(ex, symbol, k, sec, pp)
+            if not ok:
+                log.info(f"  {key}: exchange check failed — keeping lock (safe default)")
+                continue
+            if sz == 0:
+                log.info(f"  {key}: exchange confirms flat — position closed while bot was offline, releasing lock")
+                pos = state['open_positions'].pop(key, None)
+                if pos:
+                    trade = {**pos, 'status':'closed', 'exit':pos.get('entry',0),
+                             'pnl':0.0, 'closed':_dt(), 'closed_date':_today_str(),
+                             'reason':'closed_while_offline'}
+                    state['trades'].append(trade)
+                    save_history()
+            else:
+                log.info(f"  {key}: exchange confirms still open — lock kept")
+        except Exception as e:
+            log.info(f"  {key}: reconcile error ({e}) — keeping lock (safe default)")
+    save_open_positions()
+
 def _record_open(ex, symbol, side, qty, entry, tp, sl, leverage):
     key = f"{ex}:{symbol}"
     state['open_positions'][key] = {
@@ -1137,6 +1197,7 @@ def _record_open(ex, symbol, side, qty, entry, tp, sl, leverage):
         'qty': qty, 'entry': entry, 'tp': tp, 'sl': sl,
         'leverage': leverage, 'opened': _dt(), 'opened_ts': time.time(),
     }
+    save_open_positions()
 
 def _record_close(ex, symbol, exit_price, reason):
     key = f"{ex}:{symbol}"
@@ -1153,6 +1214,7 @@ def _record_close(ex, symbol, exit_price, reason):
     if pnl > 0: state['wins'] += 1
     elif pnl < 0: state['losses'] += 1
     save_history()
+    save_open_positions()
     log.info(f"CLOSED {ex}:{symbol} pnl={round(pnl,4)} reason={reason}")
 
 def place_order_on_exchange(ex, symbol, side, tp, sl, leverage, margin_arg):
@@ -1812,6 +1874,11 @@ _lic_thread  = None
 def start_bot():
     global _tg_thread, _mon_thread, _chan_thread, _lic_thread
     load_history()
+    load_open_positions()
+    try:
+        _reconcile_open_positions()
+    except Exception as e:
+        log.info(f"position reconcile error: {e}")
     state['running'] = True
 
     if not (_tg_thread and _tg_thread.is_alive()):
