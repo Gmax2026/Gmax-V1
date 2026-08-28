@@ -20,7 +20,7 @@ from pathlib import Path
 from collections import defaultdict
 from flask import Flask, render_template_string, request, redirect, jsonify
 
-BOT_VERSION  = "2026.08.25.2"   # bumped by Paqu on each release pushed to Gmax-V1 repo
+BOT_VERSION  = "2026.08.28.1"   # bumped by Paqu on each release pushed to Gmax-V1 repo
 BOT_DIR      = Path(__file__).parent
 CONFIG_PATH  = BOT_DIR / "config.json"
 HISTORY_PATH = BOT_DIR / "trade_history.json"
@@ -1127,9 +1127,46 @@ def _ex_pos_size(ex, symbol, key, secret, pp):
 
 
 # ── Position lock check ──────────────────────────────────
+# _open_lock guards the check-then-set sequence below. Without it, two
+# signal threads racing for the same coin can both see "not locked" and
+# both place real orders, because is_coin_locked() used to be checked
+# long before _record_open() actually wrote the lock — with several
+# network calls (leverage, margin mode, balance, price, order) in
+# between where a second thread could slip through. try_lock_coin()
+# below closes that gap by claiming the lock atomically, in one step,
+# before any network call happens.
+_open_lock = threading.Lock()
+
 def is_coin_locked(ex, symbol):
     key = f"{ex}:{symbol}"
     return key in state['open_positions']
+
+def try_lock_coin(ex, symbol):
+    """Atomically checks-and-claims the lock for ex:symbol. Returns True
+    only if this call successfully claimed it (meaning it's safe to
+    proceed to place an order); returns False if another thread already
+    holds it. Must be called BEFORE any network call for that signal —
+    if the order ultimately fails, call _release_pending_lock() to free
+    it back up rather than leaving it stuck."""
+    key = f"{ex}:{symbol}"
+    with _open_lock:
+        if key in state['open_positions']:
+            return False
+        # Claim it immediately with a placeholder so no other thread can
+        # pass this check until _record_open() fills in the real details
+        # or _release_pending_lock() releases it.
+        state['open_positions'][key] = {'pending': True, 'opened_ts': time.time()}
+        return True
+
+def _release_pending_lock(ex, symbol):
+    """Frees a lock claimed by try_lock_coin() when the order attempt
+    ultimately failed or was never placed, so a future real signal for
+    that coin isn't blocked forever by a placeholder."""
+    key = f"{ex}:{symbol}"
+    with _open_lock:
+        pos = state['open_positions'].get(key)
+        if pos and pos.get('pending'):
+            del state['open_positions'][key]
 
 def load_open_positions():
     """Restores the open-position lock table from disk on startup, so a
@@ -1401,6 +1438,7 @@ def _monitor_positions():
     for key in list(state['open_positions'].keys()):
         pos = state['open_positions'].get(key)
         if not pos: continue
+        if pos.get('pending'): continue  # order still being placed by try_lock_coin() — nothing to monitor yet
         ex = pos['exchange']; symbol = pos['symbol']
         try:
             k, sec, pp = _get_creds(ex)
@@ -1567,14 +1605,21 @@ def process_signal(sig):
     margin = s['margin_usd'] if s['margin_mode']=='fixed' else None  # percent resolved per-exchange
 
     for i, ex in enumerate(enabled):
-        if is_coin_locked(ex, symbol):
+        if not try_lock_coin(ex, symbol):
             log.info(f"🔒 {ex}: {display_name(symbol)} already has open position — skipping")
             state['last_signal']['results'][ex] = 'locked'
             continue
         # Small delay between exchanges to avoid rate limits
         if i > 0:
             time.sleep(1)
-        ok, msg = place_order_on_exchange(ex, symbol, side, tp, sl, leverage, margin)
+        try:
+            ok, msg = place_order_on_exchange(ex, symbol, side, tp, sl, leverage, margin)
+        except Exception as e:
+            ok, msg = False, str(e)
+        if not ok:
+            # Order never actually landed — free the coin back up instead of
+            # leaving it stuck locked on a placeholder forever.
+            _release_pending_lock(ex, symbol)
         state['last_signal']['results'][ex] = 'ok' if ok else 'error'
 
 # ── Telegram ───────────────────────────────────────────────
@@ -1651,6 +1696,10 @@ def _fmt_positions():
         return "💼 <b>No open positions</b>"
     lines = ["💼 <b>OPEN POSITIONS</b>","━━━━━━━━━━━━━━━━━━"]
     for key,pos in state['open_positions'].items():
+        if pos.get('pending'):
+            ex_name, sym = key.split(':', 1)
+            lines.append(f"💎 <b>{display_name(sym)}</b> [{EXCHANGE_LABELS.get(ex_name, ex_name)}] ⏳ placing order...")
+            continue
         side = '🟢 LONG' if pos['side']=='buy' else '🔴 SHORT'
         lines.append(
             f"💎 <b>{display_name(pos['symbol'])}</b> [{EXCHANGE_LABELS[pos['exchange']]}] {side}\n"
@@ -2956,6 +3005,7 @@ def dashboard():
     # Warnings
     warnings = []
     for key, pos in state['open_positions'].items():
+        if pos.get('pending'): continue
         ex = pos['exchange']
         sym = pos['symbol']
         # (warnings about unlisted coins come from place_order_on_exchange at trade time)
@@ -2963,6 +3013,7 @@ def dashboard():
     # Positions
     positions = []
     for key, pos in state['open_positions'].items():
+        if pos.get('pending'): continue
         positions.append({
             'symbol'       : pos['symbol'],
             'name'         : display_name(pos['symbol']),
